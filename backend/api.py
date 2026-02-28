@@ -11,11 +11,12 @@ from shared.status import *
 
 if getattr(sys, 'frozen', False):
     BASE_PATH = Path(sys.executable).parent
+    DIST_DIR = BASE_PATH / "_internal" / "frontend" / "dist"
 else:
     BASE_PATH = Path(__file__).resolve().parent.parent
+    DIST_DIR = BASE_PATH / "frontend" / "dist"
 
 VERSION_FILE = BASE_PATH / "version.json"
-DIST_DIR = BASE_PATH / "frontend" / "dist"
 
 def get_local_version():
     try:
