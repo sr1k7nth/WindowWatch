@@ -1,8 +1,10 @@
 import sqlite3
 from datetime import date, timedelta
+from shared.paths import DB_PATH
+
 
 def init_db():
-    conn = sqlite3.connect('screen_time.db')
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     cur.execute("""
         CREATE TABLE IF NOT EXISTS daily_usage (
@@ -21,7 +23,7 @@ def bulk_save_usage(usage_list):
     This is what your perform_sync() is looking for.
     """
     today = date.today().isoformat()
-    conn = sqlite3.connect('screen_time.db')
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
     # Prep the data for SQLite
@@ -43,7 +45,7 @@ def bulk_save_usage(usage_list):
 
 def get_today_data():
     today = date.today().isoformat()
-    conn = sqlite3.connect('screen_time.db')
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     cur.execute("SELECT app_name, duration FROM daily_usage WHERE date = ?", (today,))
     rows = cur.fetchall()
@@ -53,7 +55,7 @@ def get_today_data():
 def get_weekly_usage():
     today = date.today()
     week_start = today - timedelta(days=6)
-    conn = sqlite3.connect('screen_time.db')
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
     cur.execute("""
@@ -78,7 +80,7 @@ def get_monthly_usage():
     today = date.today()
     # Get the start of the current month
     month_start = today.replace(day=1).isoformat()
-    conn = sqlite3.connect('screen_time.db')
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
     cur.execute("""

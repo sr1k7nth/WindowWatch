@@ -1,48 +1,23 @@
-import json, os
+import json
+from shared.paths import CONFIG_PATH
+
 
 def read():
-  if os.path.exists("config.json"):
-    with open("config.json", "r+") as f:
-      try:
-        data = json.load(f)
-        return data["threshold_time"]
-      except (json.JSONDecodeError, KeyError):
-        f.seek(0)
-        f.truncate()
-        data = {
-          "threshold_time": 60
-        }
-        json.dump(data, f)
+    if not CONFIG_PATH.exists():
+        default_data = {"threshold_time": 60}
+        CONFIG_PATH.write_text(json.dumps(default_data))
         return 60
-  else:
-    print("config.json doesn't exits!")
-    with open("config.json", "x") as f:
-      data = {
-        "threshold_time": 60
-      }
-      json.dump(data, f)
-    return 60
-  
+
+    try:
+        with open(CONFIG_PATH, "r") as f:
+            data = json.load(f)
+            return data.get("threshold_time", 60)
+    except (json.JSONDecodeError, KeyError):
+        default_data = {"threshold_time": 60}
+        CONFIG_PATH.write_text(json.dumps(default_data))
+        return 60
+
 
 def write(new_threshold):
-  if os.path.exists("config.json"):
-    with open("config.json", "r+") as f:
-      try:
-        data = json.load(f)
-        f.seek(0)
-        f.truncate()
-        data["threshold_time"] = new_threshold
-        json.dump(data, f)
-      except (json.JSONDecodeError, KeyError):
-        f.seek(0)
-        f.truncate()
-        data = {
-          "threshold_time": new_threshold
-        }
-        json.dump(data, f)
-  else:
-    with open("config.json", "x") as f:
-      data = {
-        "threshold_time": new_threshold
-      }
-      json.dump(data, f)
+    data = {"threshold_time": new_threshold}
+    CONFIG_PATH.write_text(json.dumps(data))
