@@ -15,6 +15,7 @@ else:
     BASE_PATH = Path(__file__).resolve().parent.parent
 
 VERSION_FILE = BASE_PATH / "version.json"
+DIST_DIR = BASE_PATH / "frontend" / "dist"
 
 def get_local_version():
     try:
@@ -26,26 +27,10 @@ def get_local_version():
 
 APP_VERSION = get_local_version()
 
-url = "https://raw.githubusercontent.com/sr1k7nth/WinTrack/main/version.json"
+url = "https://raw.githubusercontent.com/sr1k7nth/WinTrack/main/remote_version.json"
 
 def version_tuple(v):
     return tuple(map(int, v.split(".")))
-
-DIST_DIR = BASE_PATH / "frontend" / "dist"
-
-url = "https://raw.githubusercontent.com/sr1k7nth/WinTrack/main/version.json"
-
-def version_tuple(v):
-    return tuple(map(int, v.split(".")))
-
-
-
-if getattr(sys, 'frozen', False):
-    BASE_PATH = Path(sys._MEIPASS)
-else:
-    BASE_PATH = Path(__file__).resolve().parent.parent
-
-DIST_DIR = BASE_PATH / "frontend" / "dist"
 
 app = FastAPI()
 app.mount("/assets", StaticFiles(directory=DIST_DIR / "assets"), name="assets")
