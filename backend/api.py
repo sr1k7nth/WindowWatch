@@ -10,7 +10,7 @@ from shared.status import *
 
 
 if getattr(sys, 'frozen', False):
-    BASE_PATH = Path(sys._MEIPASS)
+    BASE_PATH = Path(sys.executable).parent
 else:
     BASE_PATH = Path(__file__).resolve().parent.parent
 
