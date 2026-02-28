@@ -59,7 +59,7 @@ class ButtonHolder(QMainWindow):
         super().__init__()
         self.settings = QSettings("ScreenTime", "ScreenTimeApp")
         init_db()
-        self.setWindowTitle("Window Watch")
+        self.setWindowTitle("WinTrack")
         self.setWindowIcon(QIcon(str(ICON_PATH)))
         self.setFixedSize(300, 200)
 
@@ -104,7 +104,7 @@ class ButtonHolder(QMainWindow):
         self.setCentralWidget(central)
 
         self.tray = QSystemTrayIcon(QIcon(str(ICON_PATH)), self)
-        self.tray.setToolTip("Screen Time Tracker")
+        self.tray.setToolTip("WinTrack")
 
         menu = QMenu()
         open_action = menu.addAction("Open")

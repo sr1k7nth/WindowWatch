@@ -1,4 +1,4 @@
-# Screen Time App
+# WinTrack
 A desktop screen-time tracking application built with:
 
 - PySide6 (Desktop App & System Tray)
