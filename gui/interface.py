@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QSystemTrayIcon, QMenu, QDialog, QSpinBox, QLabel, QDialogButtonBox, QCheckBox, QMessageBox
 from PySide6.QtGui import QIcon
-import sys, os, socket
+import sys, socket
 from PySide6.QtCore import QThread, QSettings, QTimer
 from st_tracker.worker import TrackerWorker
 from threading import Thread
@@ -43,7 +43,7 @@ class ThresholdDialog(QDialog):
         self.label_note.setStyleSheet("color: gray; font-size: 12px;")
         layout.addWidget(self.label_note)
 
-        # 5. Add OK/Cancel Buttons
+        #OK/Cancel Buttons
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
@@ -63,7 +63,7 @@ class ButtonHolder(QMainWindow):
         self.setWindowIcon(QIcon(str(ICON_PATH)))
         self.setFixedSize(300, 200)
 
-        saved_val = helper.read()
+        saved_threshold_val = helper.read()
 
         btn_reset = QPushButton("Reset")
         btn_reset.clicked.connect(self.handle_reset)
@@ -80,7 +80,6 @@ class ButtonHolder(QMainWindow):
         btn_start = QPushButton("Start Tracking Again")
         btn_start.clicked.connect(self.handle_start)
 
-        # Create the button
         btn_settings = QPushButton("Change Threshold Time")
         btn_settings.clicked.connect(self.handle_threshold)
 
@@ -126,17 +125,19 @@ class ButtonHolder(QMainWindow):
         self.tray.show()
 
 
-        #Thread
+        #c=Creating QThread
         self.thread = QThread()
-        self.worker = TrackerWorker(saved_val)
+        self.worker = TrackerWorker(saved_threshold_val)
 
-        #starting FastAPI
+        #starting FastAPI in Thread
         self.api_thread = Thread(target=run_api, daemon=True)
         self.api_thread.start()
         print("FastAPI server started.")
 
-
+        #Now worker object belongs to this QThread
         self.worker.moveToThread(self.thread)
+
+        # When QThread starts, execute worker.run() inside the thread
         self.thread.started.connect(self.worker.run)
         self.worker.finished.connect(self.thread.quit)
         self.thread.start()
