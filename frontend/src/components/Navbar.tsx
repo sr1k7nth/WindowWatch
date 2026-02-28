@@ -25,7 +25,7 @@ export default function Navbar() {
         </div>
 
         <div className="nav-right">
-          <a href="https://github.com/sr1k7nth/screen-time" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/sr1k7nth/WinTrack" target="_blank" rel="noopener noreferrer">
             <img
               src={githubLogo}
               className="w-12 h-12 hover:w-14 hover:h-14 hover:shadow- transition-all duration-300"
