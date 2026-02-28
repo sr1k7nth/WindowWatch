@@ -1,0 +1,9 @@
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+.layout {
+  width: 100%;
+  padding: 0 40px;   /* left & right padding only */
+}
