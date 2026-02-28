@@ -1,12 +1,43 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn, sys, os
+import uvicorn, sys, requests, json
 from shared.memory import stats_data, stats_lock
 from backend.database import get_weekly_usage, get_monthly_usage
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pathlib import Path
 from shared.status import *
+
+
+if getattr(sys, 'frozen', False):
+    BASE_PATH = Path(sys._MEIPASS)
+else:
+    BASE_PATH = Path(__file__).resolve().parent.parent
+
+VERSION_FILE = BASE_PATH / "version.json"
+
+def get_local_version():
+    try:
+        with open(VERSION_FILE, "r") as f:
+            data = json.load(f)
+            return data.get("version", "0.0.0")
+    except Exception:
+        return "0.0.0"
+
+APP_VERSION = get_local_version()
+
+url = "https://raw.githubusercontent.com/sr1k7nth/WinTrack/main/version.json"
+
+def version_tuple(v):
+    return tuple(map(int, v.split(".")))
+
+DIST_DIR = BASE_PATH / "frontend" / "dist"
+
+url = "https://raw.githubusercontent.com/sr1k7nth/WinTrack/main/version.json"
+
+def version_tuple(v):
+    return tuple(map(int, v.split(".")))
+
 
 
 if getattr(sys, 'frozen', False):
@@ -147,6 +178,30 @@ def monthly_stats():
         "daily": formatted_daily,
         "totals": formatted_totals
     }
+
+@app.get("/api/update")
+def get_version():
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+
+        version_data = response.json()
+        latest_version = version_data.get("latest_version", APP_VERSION)
+
+        update_available = version_tuple(latest_version) > version_tuple(APP_VERSION)
+
+        return {
+            "update_available": update_available,
+            "current_version": APP_VERSION,
+            "latest_version": latest_version,
+        }
+
+    except Exception:
+        return {
+            "update_available": False,
+            "current_version": APP_VERSION,
+            "latest_version": APP_VERSION
+        }
 
 @app.get("/{full_path:path}")
 def serve_spa(full_path: str):

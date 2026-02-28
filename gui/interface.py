@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QSystemTrayIcon, QMenu, QDialog, QSpinBox, QLabel, QDialogButtonBox, QCheckBox, QMessageBox
 from PySide6.QtGui import QIcon
-import sys, os, socket
+import sys, socket
 from PySide6.QtCore import QThread, QSettings, QTimer
 from st_tracker.worker import TrackerWorker
 from threading import Thread
