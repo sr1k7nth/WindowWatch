@@ -11,12 +11,13 @@ from shared.status import *
 
 if getattr(sys, 'frozen', False):
     BASE_PATH = Path(sys.executable).parent
+    VERSION_FILE = BASE_PATH / "_internal" / "version.json"
     DIST_DIR = BASE_PATH / "_internal" / "frontend" / "dist"
 else:
     BASE_PATH = Path(__file__).resolve().parent.parent
+    VERSION_FILE = BASE_PATH / "version.json"
     DIST_DIR = BASE_PATH / "frontend" / "dist"
 
-VERSION_FILE = BASE_PATH / "version.json"
 
 def get_local_version():
     try:
@@ -172,13 +173,13 @@ def get_version():
         response.raise_for_status()
 
         version_data = response.json()
-        latest_version = version_data.get("latest_version", APP_VERSION)
-
-        update_available = version_tuple(latest_version) > version_tuple(APP_VERSION)
+        current_version = get_local_version()
+        latest_version = version_data.get("latest_version", current_version)
+        update_available = version_tuple(latest_version) > version_tuple(current_version)
 
         return {
             "update_available": update_available,
-            "current_version": APP_VERSION,
+            "current_version": current_version,
             "latest_version": latest_version,
         }
 
